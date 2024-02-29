@@ -21,5 +21,16 @@ module.exports = {
     'no-unused-vars': 1,
     'no-new-native-nonconstructor': 0,
     'no-param-reassign': 0,
+    'import/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'internal', ['sibling', 'parent'], 'index', 'unknown'],
+        'newlines-between': 'always',
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true,
+        },
+      },
+    ],
   },
 };

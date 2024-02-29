@@ -1,5 +1,152 @@
-import { Button } from '@mui/material';
+import { Button, PageHeader, TextField, shortAddress } from '@msafe/msafe-ui';
+import { MSafeWallet } from '@msafe/sui-wallet';
+import { SUI_COIN, buildCoinTransferTxb, isSameAddress } from '@msafe/sui3-utils';
+import { CheckCircle } from '@mui/icons-material';
+import { Box, Container, Stack } from '@mui/material';
+import {
+  useConnectWallet,
+  useCurrentAccount,
+  useCurrentWallet,
+  useDisconnectWallet,
+  useSuiClient,
+} from '@mysten/dapp-kit';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { useSnackbar } from 'notistack';
+import { useEffect, useMemo, useState } from 'react';
+import { fromHEX, toHEX } from '@mysten/sui.js/utils';
 
 export default function App() {
-  return <Button>Button</Button>;
+  const { mutate: disconnect } = useDisconnectWallet();
+  const { mutate: connect } = useConnectWallet();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const suiClient = useSuiClient();
+  const wallet = useCurrentWallet();
+  const account = useCurrentAccount();
+
+  const [txContent, setTxContent] = useState('');
+  const [proposing, setProposing] = useState(false);
+
+  useEffect(() => {
+    connect({
+      wallet: new MSafeWallet('msafe-plain-tx'),
+      silent: true,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (account && account.address) {
+      buildCoinTransferTxb(
+        suiClient,
+        {
+          amount: '500000',
+          coinType: SUI_COIN,
+          recipient: '0x1',
+        },
+        account.address,
+      ).then((tb) => {
+        tb.build({ client: suiClient }).then((res) => {
+          setTxContent(toHEX(res));
+        });
+      });
+    }
+  }, [account]);
+
+  const signAndExecuteTransactionBlock = useMemo(() => {
+    if (!wallet.currentWallet) {
+      return null;
+    }
+    const feature = wallet.currentWallet.features['sui:signAndExecuteTransactionBlock'];
+    if (!feature) {
+      return null;
+    }
+    return feature.signAndExecuteTransactionBlock;
+  }, [wallet]);
+
+  return (
+    <Container>
+      <Stack spacing={3}>
+        <PageHeader
+          mainTitle="Plain Transaction"
+          subtitle="Propose your plain transaction with MSafe multisig protection"
+          action={
+            wallet.isConnected ? (
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => disconnect()}
+                startIcon={<CheckCircle color="success" />}
+              >
+                {account ? shortAddress(account.address) : 'Disconnect'}
+              </Button>
+            ) : (
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() =>
+                  connect({
+                    wallet: new MSafeWallet('msafe-plain-tx'),
+                    silent: true,
+                  })
+                }
+              >
+                Connect
+              </Button>
+            )
+          }
+        />
+        <TextField
+          label="Transaction Block"
+          placeholder="Please input your transaction block BASE-64 encoding content."
+          rows={7}
+          multiline
+          value={txContent}
+          onChange={(v) => {
+            setTxContent(v.target.value);
+          }}
+        />
+        <Stack direction="row">
+          <Box flexGrow={1} />
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!wallet.isConnected}
+            loading={proposing}
+            onClick={async () => {
+              try {
+                const transactionBlock = TransactionBlock.from(fromHEX(txContent));
+
+                if (!account || !signAndExecuteTransactionBlock) {
+                  throw new Error('No account information');
+                }
+
+                if (
+                  !transactionBlock.blockData.sender ||
+                  !isSameAddress(transactionBlock.blockData.sender, account.address)
+                ) {
+                  throw new Error('Transaction sender is not same as the multisig address');
+                }
+
+                setProposing(true);
+
+                await signAndExecuteTransactionBlock({
+                  transactionBlock,
+                  account,
+                  chain: account.chains[0],
+                });
+              } catch (e) {
+                enqueueSnackbar(`Can't propose transaction: ${String(e)}`, { variant: 'error' });
+                throw e;
+              } finally {
+                setProposing(false);
+              }
+            }}
+          >
+            Propose
+          </Button>
+        </Stack>
+      </Stack>
+    </Container>
+  );
 }
