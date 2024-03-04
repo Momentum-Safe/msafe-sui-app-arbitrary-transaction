@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@msafe/msafe-ui": "^1.5.84",
-    "@msafe/sui-wallet": "^0.0.13",
+    "@msafe/sui-wallet": "^0.0.18",
     "@msafe/sui3-utils": "^3.1.49-pre-d3c5a55.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.14.15",

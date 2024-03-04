@@ -1350,25 +1350,27 @@
     vite-plugin-svgr "^2.4.0"
     voca "^1.4.0"
 
-"@msafe/sui-app-store@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@msafe/sui-app-store/-/sui-app-store-0.0.11.tgz#1e0c8a44f54c82f4655094ed4e483aa4130566f7"
-  integrity sha512-9qIgqBiYG47SOkg3CM01DdizAhHDzktBs6shPSZyvBRZaD2JnBvO10CIijeaVeRjEQ8FzeV/b/wZtszpd9P6BQ==
+"@msafe/sui-app-store@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@msafe/sui-app-store/-/sui-app-store-0.0.13.tgz#8061afd942daa34c729afb0ca3c1d097be0303df"
+  integrity sha512-yP6KWlZJlaBBSSDW3oI3rZW2kxWNG6RO+2X3qjBc3maQosQ4P/9iM9LIPY5trKOOcFwSgTCn1IEgsCVd2j5Phg==
   dependencies:
+    "@mysten/sui.js" "^0.50.1"
     axios "^1.6.7"
     buffer "^6.0.3"
     luxon "^3.4.4"
     nanoid "^5.0.6"
     sort-keys-recursive "^2.1.10"
 
-"@msafe/sui-wallet@^0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@msafe/sui-wallet/-/sui-wallet-0.0.13.tgz#560c9f24f490cd9d938bac9d38041f8aecc3bdde"
-  integrity sha512-O7KE4xjuinHlXuIiry7PZ7Iw8fCZnnvXZ85zWnnVkGNjW+BrC2QVh1eu8PdGOcxGZ98QlGAf/QQPDgnPFyuVXQ==
+"@msafe/sui-wallet@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@msafe/sui-wallet/-/sui-wallet-0.0.18.tgz#babee685d839a98eb529d4696ee2fcbb39f9b12f"
+  integrity sha512-n5i6a0EyBfdGim59v0h2bPNYHl9wnhlqF5Q35NboJf33pU4m+BTt2dmRtZq1ITnMffKq37snBmvOdlmcp5w0IA==
   dependencies:
     "@msafe/bellhop-iframe" "^3.5.3"
-    "@msafe/sui-app-store" "^0.0.11"
+    "@msafe/sui-app-store" "^0.0.13"
     "@msafe/sui3-utils" "^3.1.47"
+    "@mysten/sui.js" "^0.50.1"
     buffer "^6.0.3"
     json-rpc-protocol "^0.13.2"
 

@@ -28,11 +28,15 @@ export default function App() {
   const [txContent, setTxContent] = useState('');
   const [proposing, setProposing] = useState(false);
 
-  useEffect(() => {
+  const connectWallet = () => {
     connect({
-      wallet: new MSafeWallet('msafe-plain-tx'),
+      wallet: new MSafeWallet('msafe-plain-tx', suiClient, 'sui:testnet'),
       silent: true,
     });
+  };
+
+  useEffect(() => {
+    connectWallet();
   }, []);
 
   useEffect(() => {
@@ -40,9 +44,9 @@ export default function App() {
       buildCoinTransferTxb(
         suiClient,
         {
-          amount: '500000',
+          amount: '500000000',
           coinType: SUI_COIN,
-          recipient: '0x1',
+          recipient: '0x6a7da68260ca5bb32ed0dde656b3ad75c82f7b24504f487739aa76221a2d5e0b',
         },
         account.address,
       ).then((tb) => {
@@ -81,16 +85,7 @@ export default function App() {
                 {account ? shortAddress(account.address) : 'Disconnect'}
               </Button>
             ) : (
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() =>
-                  connect({
-                    wallet: new MSafeWallet('msafe-plain-tx'),
-                    silent: true,
-                  })
-                }
-              >
+              <Button variant="outlined" color="secondary" onClick={connectWallet}>
                 Connect
               </Button>
             )
