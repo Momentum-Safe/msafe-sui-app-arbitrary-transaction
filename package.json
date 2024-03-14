@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@msafe/msafe-ui": "^1.5.84",
-    "@msafe/sui-wallet": "^0.0.30",
-    "@msafe/sui3-utils": "^3.1.49-pre-d3c5a55.0",
+    "@msafe/sui-wallet": "^0.0.41",
+    "@msafe/sui3-utils": "^3.1.55-pre-1d77150.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.14.15",
     "@mysten/dapp-kit": "^0.12.2",

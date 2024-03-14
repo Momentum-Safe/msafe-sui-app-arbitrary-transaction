@@ -1350,25 +1350,26 @@
     vite-plugin-svgr "^2.4.0"
     voca "^1.4.0"
 
-"@msafe/sui-app-store@^0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@msafe/sui-app-store/-/sui-app-store-0.0.21.tgz#0fb27ffd8633c9091ac1e1329b60af343180538e"
-  integrity sha512-JNnwARwg8f4A8pq8n8JHq8lonQDUwNkkDYQxS/NFS6Kq+XOtE5nqvB7S1mMcqi7G3gP32zC/pU2YnrwJe63wZQ==
+"@msafe/sui-app-store@^0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@msafe/sui-app-store/-/sui-app-store-0.0.28.tgz#8cdadacc97e4d15612b727a7b6310cc9186e91c7"
+  integrity sha512-UTcsKL76gn35FMExn3zl6wRoe1qT+zVqiLEJMfMsb1yHdcjsypBspptW7c4aOAEcPxlqP7hq+NuLqffvK3W0VA==
   dependencies:
     "@mysten/sui.js" "^0.50.1"
     axios "^1.6.7"
     buffer "^6.0.3"
     luxon "^3.4.4"
+    nanoid "3"
     sort-keys-recursive "^2.1.10"
 
-"@msafe/sui-wallet@^0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@msafe/sui-wallet/-/sui-wallet-0.0.30.tgz#1223a843e2a5fa5cceefeb914a2010e0ff959b99"
-  integrity sha512-ve1b9y5HN6KCxwS5ajrfM5DQKudjDMS9GhSPUBBH8ZVXt932g2UKYIfKJsOjr9puGDR59PT+r1BinVejU+6xtw==
+"@msafe/sui-wallet@^0.0.41":
+  version "0.0.41"
+  resolved "https://registry.yarnpkg.com/@msafe/sui-wallet/-/sui-wallet-0.0.41.tgz#8877ce80a165df3ac0b93263d403fae74784a1ad"
+  integrity sha512-9uvI3MGjzscvU9dIjHbK2F+XQ6xfkmxGDV9svg+pzYJb4yVO+yHpKciBR2ADJLkHqt4oppHaJqZI9TqTa2QCbw==
   dependencies:
     "@msafe/bellhop-iframe" "^3.5.3"
-    "@msafe/sui-app-store" "^0.0.21"
-    "@msafe/sui3-utils" "^3.1.51"
+    "@msafe/sui-app-store" "^0.0.28"
+    "@msafe/sui3-utils" "^3.1.53"
     "@mysten/sui.js" "^0.50.1"
     buffer "^6.0.3"
     json-rpc-protocol "^0.13.2"
@@ -1384,10 +1385,10 @@
     mysql2 "^3.6.3"
     reflect-metadata "^0.1.13"
 
-"@msafe/sui3-utils@^3.1.49-pre-d3c5a55.0":
-  version "3.1.49-pre-d3c5a55.0"
-  resolved "https://registry.yarnpkg.com/@msafe/sui3-utils/-/sui3-utils-3.1.49-pre-d3c5a55.0.tgz#7ec402246e52101362a7b015213875266cc2b7b8"
-  integrity sha512-MP+R1ae1xEC5GvOtoogukrU0Yjhxy7G1idPtoWl6MA8y67vLi7I5FPKaLcW/x2etChOYTJY9eEHx3Pb3alhTVQ==
+"@msafe/sui3-utils@^3.1.53":
+  version "3.1.53"
+  resolved "https://registry.yarnpkg.com/@msafe/sui3-utils/-/sui3-utils-3.1.53.tgz#25e6f14c2fbf7a7aa2ab01fadcc7cfbaf1c4cfba"
+  integrity sha512-7Ym5h7oYm+oaG/gMoCaCmxIhEQ0+7A2d+Got1MUZegBUxi/9sipGlat5u42GgwIHyHS3ZgXmFxRuOCTNL4EbXw==
   dependencies:
     "@msafe/sui3-model" "^1.0.29"
     "@noble/hashes" "^1.3.3"
@@ -1395,15 +1396,16 @@
     crypto-js "^4.2.0"
     sort-keys-recursive "^2.1.10"
 
-"@msafe/sui3-utils@^3.1.51":
-  version "3.1.51"
-  resolved "https://registry.yarnpkg.com/@msafe/sui3-utils/-/sui3-utils-3.1.51.tgz#19786b87cb8ed4cbc21c5a6c6712d1e1a044f92b"
-  integrity sha512-HW7qUCQRyVwf4ddlBlGpYZI+iiif4yxRSKG2jRuNEsrdHY/p2QXwrxtLzslHXuf+r05dq82zNGO43T40QBZ+1Q==
+"@msafe/sui3-utils@^3.1.55-pre-1d77150.0":
+  version "3.1.55-pre-1d77150.0"
+  resolved "https://registry.yarnpkg.com/@msafe/sui3-utils/-/sui3-utils-3.1.55-pre-1d77150.0.tgz#f0e3912a94a9967e2bbc262680c5646ebde45b9f"
+  integrity sha512-yMQ6Ss7fpMta7kyN5ijhlyGEOi1jX9OVUoo2JtyYP/zfyGcEI+hZ2MRJhH8lMSmEqCjEM4CehJaGiJn/ISrl5g==
   dependencies:
     "@msafe/sui3-model" "^1.0.29"
     "@noble/hashes" "^1.3.3"
     "@types/crypto-js" "^4.2.2"
     crypto-js "^4.2.0"
+    json-bigint "^1.0.0"
     sort-keys-recursive "^2.1.10"
 
 "@mui/base@5.0.0-beta.37", "@mui/base@^5.0.0-beta.22":
@@ -3142,7 +3144,7 @@ bech32@^2.0.0:
   resolved "https://registry.yarnpkg.com/bech32/-/bech32-2.0.0.tgz#078d3686535075c8c79709f054b1b226a133b355"
   integrity sha512-LcknSilhIGatDAsY1ak2I8VtGaHNhgMSYVxFrGLXv+xLHytaKZKcaUJJUE7qmBr7h33o5YQwP55pMI0xmkpJwg==
 
-bignumber.js@^9.1.1:
+bignumber.js@^9.0.0, bignumber.js@^9.1.1:
   version "9.1.2"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.1.2.tgz#b7c4242259c008903b13707983b5f4bbd31eda0c"
   integrity sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==
@@ -4673,6 +4675,13 @@ jsesc@^2.5.1:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-2.5.2.tgz#80564d2e483dacf6e8ef209650a67df3f0c283a4"
   integrity sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==
+
+json-bigint@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/json-bigint/-/json-bigint-1.0.0.tgz#ae547823ac0cad8398667f8cd9ef4730f5b01ff1"
+  integrity sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==
+  dependencies:
+    bignumber.js "^9.0.0"
 
 json-buffer@3.0.1:
   version "3.0.1"

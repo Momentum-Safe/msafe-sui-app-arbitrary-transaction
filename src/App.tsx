@@ -27,6 +27,7 @@ export default function App() {
 
   const [txContent, setTxContent] = useState('');
   const [proposing, setProposing] = useState(false);
+  const [generating, setGenerating] = useState(false);
 
   const connectWallet = () => {
     connect({
@@ -38,24 +39,6 @@ export default function App() {
   useEffect(() => {
     connectWallet();
   }, []);
-
-  useEffect(() => {
-    if (account && account.address) {
-      buildCoinTransferTxb(
-        suiClient,
-        {
-          amount: '500000000',
-          coinType: SUI_COIN,
-          recipient: '0x6a7da68260ca5bb32ed0dde656b3ad75c82f7b24504f487739aa76221a2d5e0b',
-        },
-        account.address,
-      ).then((tb) => {
-        tb.build({ client: suiClient }).then((res) => {
-          setTxContent(toHEX(res));
-        });
-      });
-    }
-  }, [account]);
 
   const signAndExecuteTransactionBlock = useMemo(() => {
     if (!wallet.currentWallet) {
@@ -101,8 +84,38 @@ export default function App() {
             setTxContent(v.target.value);
           }}
         />
-        <Stack direction="row">
+        <Stack direction="row" spacing={1}>
           <Box flexGrow={1} />
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={!wallet.isConnected}
+            loading={generating}
+            onClick={() => {
+              if (account && account.address) {
+                setGenerating(true);
+                buildCoinTransferTxb(
+                  suiClient,
+                  {
+                    amount: '500000000',
+                    coinType: SUI_COIN,
+                    recipient: '0x6a7da68260ca5bb32ed0dde656b3ad75c82f7b24504f487739aa76221a2d5e0b',
+                  },
+                  account.address,
+                )
+                  .then((tb) => {
+                    tb.build({ client: suiClient })
+                      .then((res) => {
+                        setTxContent(toHEX(res));
+                      })
+                      .finally(() => setGenerating(false));
+                  })
+                  .catch(() => setGenerating(false));
+              }
+            }}
+          >
+            Generate Demo Payload
+          </Button>
           <Button
             variant="contained"
             color="primary"
