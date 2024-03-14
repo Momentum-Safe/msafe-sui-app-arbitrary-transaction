@@ -22,10 +22,11 @@ function Root() {
         <QueryClientProvider client={queryClient}>
           <SuiClientProvider
             createClient={(name) => {
+              console.log('🚀 ~ Root ~ name:', name);
               if (name === 'mainnet') {
-                return new SuiClient({ url: 'https://sui-mainnet.blockvision.org/v1/2Sgk89ivT64MnKdcGzjmyjY2ndD' });
+                return new SuiClient({ url: 'https://fullnode.mainnet.sui.io' });
               } else {
-                return new SuiClient({ url: 'https://sui-testnet.blockvision.org/v1/2Sgk89ivT64MnKdcGzjmyjY2ndD' });
+                return new SuiClient({ url: 'https://fullnode.testnet.sui.io' });
               }
             }}
           >
