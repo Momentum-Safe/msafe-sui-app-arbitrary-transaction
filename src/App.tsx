@@ -97,7 +97,7 @@ export default function App() {
                 buildCoinTransferTxb(
                   suiClient,
                   {
-                    amount: '500000000',
+                    amount: '10000000',
                     coinType: SUI_COIN,
                     recipient: '0x6a7da68260ca5bb32ed0dde656b3ad75c82f7b24504f487739aa76221a2d5e0b',
                   },
