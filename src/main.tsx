@@ -21,13 +21,8 @@ function Root() {
       <MavenProvider>
         <QueryClientProvider client={queryClient}>
           <SuiClientProvider
-            createClient={(name) => {
-              console.log('🚀 ~ Root ~ name:', name);
-              if (name === 'mainnet') {
-                return new SuiClient({ url: 'https://fullnode.mainnet.sui.io' });
-              } else {
-                return new SuiClient({ url: 'https://fullnode.testnet.sui.io' });
-              }
+            createClient={() => {
+              return new SuiClient({ url: 'https://fullnode.mainnet.sui.io' });
             }}
           >
             <WalletProvider preferredWallets={['msafe']}>
