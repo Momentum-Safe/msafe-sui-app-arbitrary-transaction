@@ -11,10 +11,9 @@ import {
   useSuiClient,
 } from '@mysten/dapp-kit';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { fromHEX, toHEX } from '@mysten/sui.js/utils';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
-import { fromHEX, toHEX } from '@mysten/sui.js/utils';
-import TwitterLogin from 'react-twitter-login';
 
 export const TWITTER_STATE = 'twitter-increaser-state';
 const TWITTER_CODE_CHALLENGE = 'challenge';
