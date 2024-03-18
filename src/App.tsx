@@ -14,6 +14,46 @@ import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { fromHEX, toHEX } from '@mysten/sui.js/utils';
+import TwitterLogin from 'react-twitter-login';
+
+export const TWITTER_STATE = 'twitter-increaser-state';
+const TWITTER_CODE_CHALLENGE = 'challenge';
+const TWITTER_AUTH_URL = 'https://twitter.com/i/oauth2/authorize';
+const TWITTER_SCOPE = ['tweet.read', 'users.read', 'offline.access'].join(' ');
+
+export const getTwitterOAuthUrl = (redirectUri: string) =>
+  getURLWithQueryParams(TWITTER_AUTH_URL, {
+    response_type: 'code',
+    client_id: 'el9nS09YRHZUTzlWYVVudWdHbTQ6MTpjaQ',
+    redirect_uri: redirectUri,
+    scope: TWITTER_SCOPE,
+    state: TWITTER_STATE,
+
+    code_challenge: TWITTER_CODE_CHALLENGE,
+    code_challenge_method: 'plain',
+  });
+
+export const getURLWithQueryParams = (baseUrl: string, params: Record<string, any>) => {
+  const query = Object.entries(params)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+    .join('&');
+
+  return `${baseUrl}?${query}`;
+};
+
+export const queryStringToObject = (queryString: string) => {
+  const pairsString = queryString[0] === '?' ? queryString.slice(1) : queryString;
+
+  const pairs = pairsString.split('&').map((str) => str.split('=').map(decodeURIComponent));
+
+  return pairs.reduce<Record<string, any>>((acc, [key, value]) => {
+    if (key) {
+      acc[key] = value;
+    }
+
+    return acc;
+  }, {});
+};
 
 export default function App() {
   const { mutate: disconnect } = useDisconnectWallet();
@@ -53,6 +93,7 @@ export default function App() {
 
   return (
     <Container>
+      <a href={getTwitterOAuthUrl('https://aptos.m-safe.io')}>Login</a>
       <Stack spacing={3}>
         <PageHeader
           mainTitle="Plain Transaction"
