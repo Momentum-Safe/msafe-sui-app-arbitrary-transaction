@@ -92,7 +92,7 @@ export default function App() {
 
   return (
     <Container>
-      <a href={getTwitterOAuthUrl('https://aptos.m-safe.io')}>Login</a>
+      <a href={getTwitterOAuthUrl(window.location.href)}>Login</a>
       <Stack spacing={3}>
         <PageHeader
           mainTitle="Plain Transaction"
