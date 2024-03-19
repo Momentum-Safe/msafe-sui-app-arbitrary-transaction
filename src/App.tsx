@@ -1,4 +1,4 @@
-import { Button, PageHeader, TextField, shortAddress } from '@msafe/msafe-ui';
+import { AddressWidget, Button, PageHeader, TextField, shortAddress } from '@msafe/msafe-ui';
 import { MSafeWallet } from '@msafe/sui-wallet';
 import { SUI_COIN, buildCoinTransferTxb, isSameAddress } from '@msafe/sui3-utils';
 import { CheckCircle } from '@mui/icons-material';
@@ -14,13 +14,17 @@ import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { fromHEX, toHEX } from '@mysten/sui.js/utils';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { TwitterIcon, TwitterShareButton } from 'react-share';
+import { useSearchParam } from 'react-use';
 
 export default function App() {
   const { mutate: disconnect } = useDisconnectWallet();
   const { mutate: connect } = useConnectWallet();
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const [search] = useSearchParams();
 
   const suiClient = useSuiClient();
   const wallet = useCurrentWallet();
@@ -75,18 +79,21 @@ export default function App() {
             )
           }
         />
-        <TwitterShareButton
-          url={window.location.href}
-          title="Demo content"
-          hashtags={['A', 'B', 'C']}
-          related={['aaricchen']}
-          style={{ display: 'flex' }}
-          onShareWindowClose={() => {
-            console.log('close');
-          }}
-        >
-          <TwitterIcon size={36} round />
-        </TwitterShareButton>
+        <Stack spacing={2}>
+          {search.get('code') && <AddressWidget address={search.get('code') ?? ''} showCopyButton />}
+          <TwitterShareButton
+            url={window.location.href}
+            title="Demo content"
+            hashtags={['A', 'B', 'C']}
+            related={['aaricchen']}
+            style={{ display: 'flex' }}
+            onShareWindowClose={() => {
+              console.log('close');
+            }}
+          >
+            <TwitterIcon size={36} round />
+          </TwitterShareButton>
+        </Stack>
         <TextField
           label="Transaction Block"
           placeholder="Please input your transaction block BASE-64 encoding content."
