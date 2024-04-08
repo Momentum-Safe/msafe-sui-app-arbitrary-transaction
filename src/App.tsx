@@ -2,7 +2,7 @@ import { Button, PageHeader, TextField, shortAddress } from '@msafe/msafe-ui';
 import { MSafeWallet } from '@msafe/sui-wallet';
 import { SUI_COIN, buildCoinTransferTxb, isSameAddress } from '@msafe/sui3-utils';
 import { CheckCircle } from '@mui/icons-material';
-import { Box, Container, Stack } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import {
   useConnectWallet,
   useCurrentAccount,
@@ -11,9 +11,18 @@ import {
   useSuiClient,
 } from '@mysten/dapp-kit';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { fromHEX, toHEX } from '@mysten/sui.js/utils';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
-import { fromHEX, toHEX } from '@mysten/sui.js/utils';
+import { CopyBlock } from 'react-code-blocks';
+const code = `import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { toHEX } from '@mysten/sui.js/utils';
+
+const txb = new TransactionBlock();
+// Your build logic here
+const txBytes = txb.build();
+// Copy below txHex content to input
+const txHex = toHEX(txBytes);`;
 
 export default function App() {
   const { mutate: disconnect } = useDisconnectWallet();
@@ -52,7 +61,7 @@ export default function App() {
   }, [wallet]);
 
   return (
-    <Container>
+    <Container sx={{ mt: 4 }}>
       <Stack spacing={3}>
         <PageHeader
           mainTitle="Plain Transaction"
@@ -153,6 +162,12 @@ export default function App() {
           >
             Propose
           </Button>
+        </Stack>
+        <Stack spacing={2}>
+          <Typography>Example Code:</Typography>
+          <Stack spacing={1} sx={{ borderRadius: 1, border: '1px solid #CCC', p: 2 }}>
+            <CopyBlock text={code} language="js" />
+          </Stack>
         </Stack>
       </Stack>
     </Container>
