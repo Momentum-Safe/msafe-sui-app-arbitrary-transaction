@@ -1,6 +1,6 @@
 import { Button, PageHeader, TextField, shortAddress } from '@msafe/msafe-ui';
 import { MSafeWallet } from '@msafe/sui-wallet';
-import { SUI_COIN, buildCoinTransferTxb, isSameAddress } from '@msafe/sui3-utils';
+import { isSameAddress } from '@msafe/sui3-utils';
 import { CheckCircle } from '@mui/icons-material';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import {
@@ -11,7 +11,7 @@ import {
   useSuiClient,
 } from '@mysten/dapp-kit';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
-import { fromHEX, toHEX } from '@mysten/sui.js/utils';
+import { fromHEX } from '@mysten/sui.js/utils';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { CopyBlock } from 'react-code-blocks';
@@ -36,7 +36,6 @@ export default function App() {
 
   const [txContent, setTxContent] = useState('');
   const [proposing, setProposing] = useState(false);
-  const [generating, setGenerating] = useState(false);
 
   const connectWallet = () => {
     connect({
@@ -95,36 +94,6 @@ export default function App() {
         />
         <Stack direction="row" spacing={1}>
           <Box flexGrow={1} />
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={!wallet.isConnected}
-            loading={generating}
-            onClick={() => {
-              if (account && account.address) {
-                setGenerating(true);
-                buildCoinTransferTxb(
-                  suiClient,
-                  {
-                    amount: '10000000',
-                    coinType: SUI_COIN,
-                    recipient: '0x6a7da68260ca5bb32ed0dde656b3ad75c82f7b24504f487739aa76221a2d5e0b',
-                  },
-                  account.address,
-                )
-                  .then((tb) => {
-                    tb.build({ client: suiClient })
-                      .then((res) => {
-                        setTxContent(toHEX(res));
-                      })
-                      .finally(() => setGenerating(false));
-                  })
-                  .catch(() => setGenerating(false));
-              }
-            }}
-          >
-            Generate Demo Payload
-          </Button>
           <Button
             variant="contained"
             color="primary"
