@@ -1,6 +1,6 @@
 import { Button, PageHeader, TextField, shortAddress } from '@msafe/msafe-ui';
 import { MSafeWallet } from '@msafe/sui-wallet';
-import { isSameAddress } from '@msafe/sui3-utils';
+import { buildCoinTransferTxb, isSameAddress, SUI_COIN } from '@msafe/sui3-utils';
 import { CheckCircle } from '@mui/icons-material';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import {
@@ -11,7 +11,7 @@ import {
   useSuiClient,
 } from '@mysten/dapp-kit';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
-import { fromHEX } from '@mysten/sui.js/utils';
+import { fromHEX, toHEX } from '@mysten/sui.js/utils';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { CopyBlock } from 'react-code-blocks';
@@ -23,6 +23,11 @@ const txb = new TransactionBlock();
 const txBytes = txb.build();
 // Copy below txHex content to input
 const txHex = toHEX(txBytes);`;
+
+function isHex(str: string): boolean {
+  const hexRegex = /^[0-9a-fA-F]+$/;
+  return hexRegex.test(str);
+}
 
 export default function App() {
   const { mutate: disconnect } = useDisconnectWallet();
@@ -84,7 +89,7 @@ export default function App() {
         />
         <TextField
           label="Transaction Block"
-          placeholder="Please input your transaction block BASE-64 encoding content."
+          placeholder="Please input your transaction block BASE-64 or HEX encoding content."
           rows={7}
           multiline
           value={txContent}
@@ -101,7 +106,12 @@ export default function App() {
             loading={proposing}
             onClick={async () => {
               try {
-                const transactionBlock = TransactionBlock.from(fromHEX(txContent));
+                let transactionBlock: TransactionBlock;
+                if (isHex(txContent)) {
+                  transactionBlock = TransactionBlock.from(fromHEX(txContent));
+                } else {
+                  transactionBlock = TransactionBlock.from(Buffer.from(txContent).toString());
+                }
 
                 if (!account || !signAndExecuteTransactionBlock) {
                   throw new Error('No account information');
