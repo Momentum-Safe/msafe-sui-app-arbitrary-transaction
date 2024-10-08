@@ -32,6 +32,7 @@
     "react-use": "^17.4.1",
     "redux": "^4.2.1",
     "styled-components": "^6.1.0",
+    "vite-plugin-node-polyfills": "^0.22.0",
     "voca": "^1.4.0"
   },
   "devDependencies": {

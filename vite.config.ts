@@ -3,14 +3,23 @@ import autoprefixer from 'autoprefixer';
 import path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { PluginOption, defineConfig } from 'vite';
-import inject from '@rollup/plugin-inject';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   define: {
     APP_MODE: process.env.APP_MODE,
   },
-  plugins: [react(), visualizer() as PluginOption],
+  plugins: [
+    react(),
+    visualizer() as PluginOption,
+    nodePolyfills({
+      globals: {
+        Buffer: true,
+      },
+      protocolImports: true,
+    }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -30,7 +39,6 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     rollupOptions: {
-      plugins: [inject({ Buffer: ['buffer/', 'Buffer'] })],
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
