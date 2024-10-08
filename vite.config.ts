@@ -3,6 +3,7 @@ import autoprefixer from 'autoprefixer';
 import path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { PluginOption, defineConfig } from 'vite';
+import inject from '@rollup/plugin-inject';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -20,7 +21,7 @@ export default defineConfig(({ mode }) => ({
   },
   esbuild: {
     // jsxInject: `import React from 'react'`,
-    // drop: mode === 'production' ? ['console', 'debugger'] : [],
+    drop: mode === 'production' ? ['console', 'debugger'] : [],
   },
   css: {
     postcss: {
@@ -29,6 +30,7 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     rollupOptions: {
+      plugins: [inject({ Buffer: ['buffer/', 'Buffer'] })],
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
