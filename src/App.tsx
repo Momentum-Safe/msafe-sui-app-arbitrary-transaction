@@ -15,6 +15,10 @@ import { fromHEX, toHEX } from '@mysten/sui.js/utils';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { CopyBlock } from 'react-code-blocks';
+import {payload2Hex, payload2Transaction} from "@/utils";
+import {
+  SuiSignAndExecuteTransactionBlockMethod
+} from "@mysten/wallet-standard/dist/cjs/features/suiSignAndExecuteTransactionBlock";
 const code = `import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { toHEX } from '@mysten/sui.js/utils';
 
@@ -106,12 +110,8 @@ export default function App() {
             loading={proposing}
             onClick={async () => {
               try {
-                let transactionBlock: TransactionBlock;
-                if (isHex(txContent)) {
-                  transactionBlock = TransactionBlock.from(fromHEX(txContent));
-                } else {
-                  transactionBlock = TransactionBlock.from(Buffer.from(txContent).toString());
-                }
+                const transactionBlock = payload2Transaction(txContent)
+                const content = payload2Hex(txContent);
 
                 if (!account || !signAndExecuteTransactionBlock) {
                   throw new Error('No account information');
@@ -130,7 +130,10 @@ export default function App() {
                   transactionBlock,
                   account,
                   chain: account.chains[0],
-                });
+                  appContext: {
+                    content,
+                  }
+                } as any);
               } catch (e) {
                 enqueueSnackbar(`Can't propose transaction: ${String(e)}`, { variant: 'error' });
                 throw e;
