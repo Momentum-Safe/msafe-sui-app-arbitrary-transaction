@@ -1,6 +1,7 @@
-import { Button, PageHeader, TextField, shortAddress } from '@msafe/msafe-ui';
+import { payload2Hex, payload2Transaction } from '@/utils';
+import { Button, PageHeader, shortAddress, TextField } from '@msafe/msafe-ui';
 import { MSafeWallet } from '@msafe/sui-wallet';
-import { buildCoinTransferTxb, isSameAddress, SUI_COIN } from '@msafe/sui3-utils';
+import { isSameAddress } from '@msafe/sui3-utils';
 import { CheckCircle } from '@mui/icons-material';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import {
@@ -10,15 +11,10 @@ import {
   useDisconnectWallet,
   useSuiClient,
 } from '@mysten/dapp-kit';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
-import { fromHEX, toHEX } from '@mysten/sui.js/utils';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { CopyBlock } from 'react-code-blocks';
-import {payload2Hex, payload2Transaction} from "@/utils";
-import {
-  SuiSignAndExecuteTransactionBlockMethod
-} from "@mysten/wallet-standard/dist/cjs/features/suiSignAndExecuteTransactionBlock";
+
 const code = `import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { toHEX } from '@mysten/sui.js/utils';
 
@@ -110,7 +106,7 @@ export default function App() {
             loading={proposing}
             onClick={async () => {
               try {
-                const transactionBlock = payload2Transaction(txContent)
+                const transactionBlock = payload2Transaction(txContent);
                 const content = payload2Hex(txContent);
 
                 if (!account || !signAndExecuteTransactionBlock) {
@@ -132,7 +128,7 @@ export default function App() {
                   chain: account.chains[0],
                   appContext: {
                     content,
-                  }
+                  },
                 } as any);
               } catch (e) {
                 enqueueSnackbar(`Can't propose transaction: ${String(e)}`, { variant: 'error' });
