@@ -1357,10 +1357,10 @@
     vite-plugin-svgr "^2.4.0"
     voca "^1.4.0"
 
-"@msafe/sui-wallet@^0.0.82":
-  version "0.0.82"
-  resolved "https://registry.yarnpkg.com/@msafe/sui-wallet/-/sui-wallet-0.0.82.tgz#3c4c3ec4593620dfcbb21f4e315034b9314315f0"
-  integrity sha512-EuROfPTupmYRIla2k+YSEkqdEPd9B8+qH8/Fy08PnLww8gwgwyltyod7j1Nk49e+rk4sRFmjuxHTe0ibpsdaBA==
+"@msafe/sui-wallet@^0.0.83":
+  version "0.0.83"
+  resolved "https://registry.yarnpkg.com/@msafe/sui-wallet/-/sui-wallet-0.0.83.tgz#fe0495cbd47d40bc3d57aedf83dfa7ac150744a3"
+  integrity sha512-WIJbyv54XmhU6Jw3oWWyVtTHeU54BkPWHJ9y55pvZFGMXZMqiyoodIQ8NyPud3C+6nDwxbf/3D2na9c8gELPrg==
   dependencies:
     buffer "^6.0.3"
     json-rpc-protocol "^0.13.2"
