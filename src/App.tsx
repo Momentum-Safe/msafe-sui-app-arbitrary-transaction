@@ -10,6 +10,7 @@ import {
   useDisconnectWallet,
   useSuiClient,
 } from '@mysten/dapp-kit';
+import { getFullnodeUrl } from '@mysten/sui.js/client';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { fromHEX, toHEX } from '@mysten/sui.js/utils';
 import { useSnackbar } from 'notistack';
@@ -44,7 +45,7 @@ export default function App() {
 
   const connectWallet = () => {
     connect({
-      wallet: new MSafeWallet('msafe-plain-tx', suiClient, 'sui:testnet'),
+      wallet: new MSafeWallet('msafe-plain-tx', getFullnodeUrl('mainnet'), 'sui:mainnet'),
       silent: true,
     });
   };
