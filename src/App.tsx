@@ -131,6 +131,10 @@ export default function App() {
                   transactionBlock,
                   account,
                   chain: account.chains[0],
+                  // @ts-ignore
+                  appContext: {
+                    content: isHex(txContent) ? fromHEX(txContent) : Buffer.from(txContent).toString(),
+                  },
                 });
               } catch (e) {
                 enqueueSnackbar(`Can't propose transaction: ${String(e)}`, { variant: 'error' });
