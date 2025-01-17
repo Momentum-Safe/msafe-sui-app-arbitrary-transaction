@@ -133,7 +133,7 @@ export default function App() {
                   chain: account.chains[0],
                   // @ts-ignore
                   appContext: {
-                    content: isHex(txContent) ? fromHEX(txContent) : Buffer.from(txContent).toString(),
+                    content: isHex(txContent) ? txContent : Buffer.from(txContent).toString(),
                   },
                 });
               } catch (e) {
