@@ -133,7 +133,8 @@ export default function App() {
                   chain: account.chains[0],
                   // @ts-ignore
                   appContext: {
-                    content: isHex(txContent) ? txContent : Buffer.from(txContent).toString(),
+                    // content is hex from transaction block
+                    content: isHex(txContent) ? txContent : toHEX(new Uint8Array(Buffer.from(txContent, 'base64'))),
                   },
                 });
               } catch (e) {
