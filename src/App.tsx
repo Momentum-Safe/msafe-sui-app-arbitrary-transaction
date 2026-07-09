@@ -9,13 +9,22 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { CopyBlock } from 'react-code-blocks';
 
-const code = `import { Transaction } from '@mysten/sui/transactions';
+const code = `import { SuiGrpcClient } from '@mysten/sui/grpc';
+import { Transaction } from '@mysten/sui/transactions';
 import { toHex } from '@mysten/sui/utils';
 
+const client = new SuiGrpcClient({
+  baseUrl: 'https://fullnode.mainnet.sui.io:443',
+  network: 'mainnet',
+});
+
 const tx = new Transaction();
+// Must match the connected MSafe multisig address
+tx.setSender('0xYOUR_MSAFE_ADDRESS');
 // Your build logic here
+
 const txBytes = await tx.build({ client });
-// Copy below txHex content to input
+// Copy the hex below into the input field
 const txHex = toHex(txBytes);`;
 
 function isHex(str: string): boolean {
