@@ -4,7 +4,7 @@ import { CheckCircle } from '@mui/icons-material';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { useCurrentAccount, useDAppKit, useWalletConnection, useWallets } from '@mysten/dapp-kit-react';
 import { Transaction } from '@mysten/sui/transactions';
-import { fromHex, toHex } from '@mysten/sui/utils';
+import { fromBase64, fromHex, toHex } from '@mysten/sui/utils';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { CopyBlock } from 'react-code-blocks';
@@ -48,7 +48,6 @@ export default function App() {
       connectWallet().catch(() => undefined);
     }
   }, [wallets, connection.isDisconnected]);
-
   return (
     <Container sx={{ mt: 4 }}>
       <Stack spacing={3}>
@@ -114,14 +113,16 @@ export default function App() {
 
                 setProposing(true);
 
+                // content must be hex-encoded built tx bytes for msafe-plain-tx helper
+                const content = isHex(txContent) ? txContent : toHex(fromBase64(txContent));
+
                 await dAppKit.signAndExecuteTransaction({
                   transaction,
                   account,
                   network: 'mainnet',
                   // @ts-expect-error appContext is a MSafe wallet extension
                   appContext: {
-                    // content is hex from transaction block
-                    content: isHex(txContent) ? txContent : toHex(new Uint8Array(Buffer.from(txContent, 'base64'))),
+                    content,
                   },
                 });
               } catch (e) {

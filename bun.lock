@@ -6,7 +6,7 @@
       "name": "msafe2.0",
       "dependencies": {
         "@msafe/msafe-ui": "^1.5.84",
-        "@msafe/sui-wallet": "^1.0.1",
+        "@msafe/sui-wallet": "^1.0.2",
         "@msafe/sui3-utils": "^3.1.55-pre-1d77150.0",
         "@mui/icons-material": "^5.11.16",
         "@mui/material": "^5.14.15",
@@ -374,7 +374,7 @@
 
     "@msafe/msafe-ui": ["@msafe/msafe-ui@1.5.85", "", { "dependencies": { "@dicebear/collection": "^6.0.4", "@dicebear/core": "^6.0.4", "@emotion/react": "^11.10.6", "@emotion/styled": "^11.10.6", "@microlink/react-json-view": "^1.23.0", "@mui/icons-material": "^5.14.15", "@mui/lab": "^5.0.0-alpha.150", "@mui/material": "^5.14.15", "@mui/x-date-pickers": "^6.16.3", "@types/numeral": "^2.0.4", "@typescript-eslint/eslint-plugin": "^5.54.0", "@typescript-eslint/parser": "^5.54.0", "ahooks": "^3.7.6", "apexcharts": "^3.42.0", "aptos": "^1.20.0", "autoprefixer": "^10.4.13", "bignumber.js": "^9.1.1", "dayjs": "^1.11.7", "eslint": "^8.35.0", "eslint-config-alloy": "^4.9.0", "eslint-plugin-react": "^7.32.2", "framer-motion": "10.11.2", "humanize-duration": "^3.30.0", "less": "^4.1.3", "luxon": "^3.4.3", "mockjs": "^1.1.0", "mui-tel-input": "^4.0.1", "nanoid": "3", "notistack": "^3.0.0-alpha.11", "numeral": "^2.0.6", "prettier": "^2.8.4", "react": "^18.2.0", "react-apexcharts": "^1.4.1", "react-copy-to-clipboard": "^5.1.0", "react-countup": "^6.4.1", "react-dom": "^18.2.0", "react-hook-form": "^7.43.9", "react-resize-detector": "^9.1.0", "react-transition-group": "^4.4.5", "react-use": "^17.4.0", "styled-components": "^5.3.6", "vite-plugin-compression": "^0.5.1", "vite-plugin-dts": "^2.1.0", "vite-plugin-svgr": "^2.4.0", "voca": "^1.4.0" } }, "sha512-0bo0pqWnyxVTL0sWNK63Hl7urNYkzph5n8xz6p/Q1LjTR72yjtUmrlt/Xyxz4Nu/maVr9zrrMstHX/6sFaXP1Q=="],
 
-    "@msafe/sui-wallet": ["@msafe/sui-wallet@1.0.1", "", { "dependencies": { "buffer": "^6.0.3", "json-rpc-protocol": "^0.13.2" }, "peerDependencies": { "@msafe/sui3-utils": ">3.0.0", "@mysten/sui": ">=2.0.0", "@mysten/wallet-standard": ">=0.21.0" } }, "sha512-9UlWLQGi3XKpb1McSKrvEiHgY7CpwYHXobyR7tVhHYQhh8IIW2TL/PeyUQ3Ibt4KTZo/p2ws3Rcq6MHxhAqnxw=="],
+    "@msafe/sui-wallet": ["@msafe/sui-wallet@1.0.2", "", { "dependencies": { "buffer": "^6.0.3", "json-rpc-protocol": "^0.13.2" }, "peerDependencies": { "@msafe/sui3-utils": ">3.0.0", "@mysten/sui": ">=2.0.0", "@mysten/wallet-standard": ">=0.21.0" } }, "sha512-u9exxIKVguE5iVFIsgC1RvHwDG9BBoR4J4djEayyPXqQQ/OsYUe1iyZnII6AoZLOPXXgAC9IR9PiykXE//aehw=="],
 
     "@msafe/sui3-model": ["@msafe/sui3-model@1.0.36", "", { "dependencies": { "@aws-sdk/client-secrets-manager": "^3.515.0", "js-yaml": "^4.1.0", "module-alias": "^2.2.3", "mysql2": "^3.6.3", "reflect-metadata": "^0.1.13" } }, "sha512-guJQdkbW+XVJHiCPH0Ty2626K5XKu1oCECPNLzea0WKEZlnrpV/A7x4C882tk96R9dM+Ok/NKpeNxUbv87YyZA=="],
 
