@@ -1,7 +1,8 @@
 import { base } from '@msafe/msafe-ui';
 import { Close } from '@mui/icons-material';
 import { Alert, IconButton } from '@mui/material';
-import { CustomContentProps, SnackbarContent, useSnackbar } from 'notistack';
+import { SnackbarContent, useSnackbar } from 'notistack';
+import type { CustomContentProps } from 'notistack';
 import { forwardRef } from 'react';
 
 const AppToast = forwardRef<HTMLDivElement, CustomContentProps>((props, ref) => {

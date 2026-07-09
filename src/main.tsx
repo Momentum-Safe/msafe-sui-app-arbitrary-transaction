@@ -1,15 +1,15 @@
 import { MavenProvider } from '@msafe/msafe-ui';
 import { CssBaseline } from '@mui/material';
-import { SuiClientProvider, WalletProvider } from '@mysten/dapp-kit';
-import '@mysten/dapp-kit/dist/index.css';
-import { SuiClient } from '@mysten/sui.js/client';
+import { DAppKitProvider } from '@mysten/dapp-kit-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SnackbarProvider } from 'notistack';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+
 import App from './App';
 import AppToast from './components/AppToast';
+import { dAppKit } from './dapp-kit';
 
 const queryClient = new QueryClient();
 
@@ -20,30 +20,24 @@ function Root() {
     <React.StrictMode>
       <MavenProvider>
         <QueryClientProvider client={queryClient}>
-          <SuiClientProvider
-            createClient={() => {
-              return new SuiClient({ url: 'https://fullnode.mainnet.sui.io' });
-            }}
-          >
-            <WalletProvider preferredWallets={['msafe']}>
-              <BrowserRouter>
-                <SnackbarProvider
-                  maxSnack={4}
-                  autoHideDuration={3500}
-                  Components={{
-                    default: AppToast,
-                    error: AppToast,
-                    success: AppToast,
-                    warning: AppToast,
-                    info: AppToast,
-                  }}
-                >
-                  <CssBaseline />
-                  <App />
-                </SnackbarProvider>
-              </BrowserRouter>
-            </WalletProvider>
-          </SuiClientProvider>
+          <DAppKitProvider dAppKit={dAppKit}>
+            <BrowserRouter>
+              <SnackbarProvider
+                maxSnack={4}
+                autoHideDuration={3500}
+                Components={{
+                  default: AppToast,
+                  error: AppToast,
+                  success: AppToast,
+                  warning: AppToast,
+                  info: AppToast,
+                }}
+              >
+                <CssBaseline />
+                <App />
+              </SnackbarProvider>
+            </BrowserRouter>
+          </DAppKitProvider>
         </QueryClientProvider>
       </MavenProvider>
     </React.StrictMode>

@@ -1,29 +1,22 @@
 import { Button, PageHeader, TextField, shortAddress } from '@msafe/msafe-ui';
-import { MSafeWallet } from '@msafe/sui-wallet';
-import { buildCoinTransferTxb, isSameAddress, SUI_COIN } from '@msafe/sui3-utils';
+import { isSameAddress } from '@msafe/sui3-utils';
 import { CheckCircle } from '@mui/icons-material';
 import { Box, Container, Stack, Typography } from '@mui/material';
-import {
-  useConnectWallet,
-  useCurrentAccount,
-  useCurrentWallet,
-  useDisconnectWallet,
-  useSuiClient,
-} from '@mysten/dapp-kit';
-import { getFullnodeUrl } from '@mysten/sui.js/client';
-import { TransactionBlock } from '@mysten/sui.js/transactions';
-import { fromHEX, toHEX } from '@mysten/sui.js/utils';
+import { useCurrentAccount, useDAppKit, useWalletConnection, useWallets } from '@mysten/dapp-kit-react';
+import { Transaction } from '@mysten/sui/transactions';
+import { fromHex, toHex } from '@mysten/sui/utils';
 import { useSnackbar } from 'notistack';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CopyBlock } from 'react-code-blocks';
-const code = `import { TransactionBlock } from '@mysten/sui.js/transactions';
-import { toHEX } from '@mysten/sui.js/utils';
 
-const txb = new TransactionBlock();
+const code = `import { Transaction } from '@mysten/sui/transactions';
+import { toHex } from '@mysten/sui/utils';
+
+const tx = new Transaction();
 // Your build logic here
-const txBytes = txb.build();
+const txBytes = await tx.build({ client });
 // Copy below txHex content to input
-const txHex = toHEX(txBytes);`;
+const txHex = toHex(txBytes);`;
 
 function isHex(str: string): boolean {
   const hexRegex = /^[0-9a-fA-F]+$/;
@@ -31,39 +24,30 @@ function isHex(str: string): boolean {
 }
 
 export default function App() {
-  const { mutate: disconnect } = useDisconnectWallet();
-  const { mutate: connect } = useConnectWallet();
+  const dAppKit = useDAppKit();
+  const wallets = useWallets();
+  const connection = useWalletConnection();
+  const account = useCurrentAccount();
 
   const { enqueueSnackbar } = useSnackbar();
-
-  const suiClient = useSuiClient();
-  const wallet = useCurrentWallet();
-  const account = useCurrentAccount();
 
   const [txContent, setTxContent] = useState('');
   const [proposing, setProposing] = useState(false);
 
-  const connectWallet = () => {
-    connect({
-      wallet: new MSafeWallet('msafe-plain-tx', getFullnodeUrl('mainnet'), 'sui:mainnet'),
-      silent: true,
-    });
+  const connectWallet = async () => {
+    const msafeWallet = wallets.find((wallet) => wallet.name === 'MSafe Wallet');
+    if (!msafeWallet) {
+      return;
+    }
+
+    await dAppKit.connectWallet({ wallet: msafeWallet });
   };
 
   useEffect(() => {
-    connectWallet();
-  }, []);
-
-  const signAndExecuteTransactionBlock = useMemo(() => {
-    if (!wallet.currentWallet) {
-      return null;
+    if (connection.isDisconnected && wallets.some((wallet) => wallet.name === 'MSafe Wallet')) {
+      connectWallet().catch(() => undefined);
     }
-    const feature = wallet.currentWallet.features['sui:signAndExecuteTransactionBlock'];
-    if (!feature) {
-      return null;
-    }
-    return feature.signAndExecuteTransactionBlock;
-  }, [wallet]);
+  }, [wallets, connection.isDisconnected]);
 
   return (
     <Container sx={{ mt: 4 }}>
@@ -72,17 +56,25 @@ export default function App() {
           mainTitle="Plain Transaction"
           subtitle="Propose your plain transaction with MSafe multisig protection"
           action={
-            wallet.isConnected ? (
+            connection.isConnected ? (
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={() => disconnect()}
+                onClick={() => {
+                  dAppKit.disconnectWallet().catch(() => undefined);
+                }}
                 startIcon={<CheckCircle color="success" />}
               >
                 {account ? shortAddress(account.address) : 'Disconnect'}
               </Button>
             ) : (
-              <Button variant="outlined" color="secondary" onClick={connectWallet}>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => {
+                  connectWallet().catch(() => undefined);
+                }}
+              >
                 Connect
               </Button>
             )
@@ -103,38 +95,33 @@ export default function App() {
           <Button
             variant="contained"
             color="primary"
-            disabled={!wallet.isConnected}
+            disabled={!connection.isConnected}
             loading={proposing}
             onClick={async () => {
               try {
-                let transactionBlock: TransactionBlock;
-                if (isHex(txContent)) {
-                  transactionBlock = TransactionBlock.from(fromHEX(txContent));
-                } else {
-                  transactionBlock = TransactionBlock.from(Buffer.from(txContent).toString());
-                }
+                const transaction = isHex(txContent)
+                  ? Transaction.from(fromHex(txContent))
+                  : Transaction.from(txContent);
 
-                if (!account || !signAndExecuteTransactionBlock) {
+                if (!account) {
                   throw new Error('No account information');
                 }
 
-                if (
-                  !transactionBlock.blockData.sender ||
-                  !isSameAddress(transactionBlock.blockData.sender, account.address)
-                ) {
+                const sender = transaction.getData().sender;
+                if (!sender || !isSameAddress(sender, account.address)) {
                   throw new Error('Transaction sender is not same as the multisig address');
                 }
 
                 setProposing(true);
 
-                await signAndExecuteTransactionBlock({
-                  transactionBlock,
+                await dAppKit.signAndExecuteTransaction({
+                  transaction,
                   account,
-                  chain: account.chains[0],
-                  // @ts-ignore
+                  network: 'mainnet',
+                  // @ts-expect-error appContext is a MSafe wallet extension
                   appContext: {
                     // content is hex from transaction block
-                    content: isHex(txContent) ? txContent : toHEX(new Uint8Array(Buffer.from(txContent, 'base64'))),
+                    content: isHex(txContent) ? txContent : toHex(new Uint8Array(Buffer.from(txContent, 'base64'))),
                   },
                 });
               } catch (e) {

@@ -1,5 +1,6 @@
 module.exports = {
   extends: ['alloy', 'alloy/react', 'alloy/typescript'],
+  plugins: ['import'],
   env: {
     // env var
     //
