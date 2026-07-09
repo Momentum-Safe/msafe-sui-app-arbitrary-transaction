@@ -1,10 +1,9 @@
 import { Button, PageHeader, TextField, shortAddress } from '@msafe/msafe-ui';
-import { isSameAddress } from '@msafe/sui3-utils';
 import { CheckCircle } from '@mui/icons-material';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { useCurrentAccount, useDAppKit, useWalletConnection, useWallets } from '@mysten/dapp-kit-react';
 import { Transaction } from '@mysten/sui/transactions';
-import { fromBase64, fromHex, toHex } from '@mysten/sui/utils';
+import { fromBase64, fromHex, normalizeSuiAddress, toHex } from '@mysten/sui/utils';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { CopyBlock } from 'react-code-blocks';
@@ -116,7 +115,7 @@ export default function App() {
                 }
 
                 const sender = transaction.getData().sender;
-                if (!sender || !isSameAddress(sender, account.address)) {
+                if (!sender || normalizeSuiAddress(sender) !== normalizeSuiAddress(account.address)) {
                   throw new Error('Transaction sender is not same as the multisig address');
                 }
 
