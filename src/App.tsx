@@ -3,32 +3,42 @@ import { CheckCircle } from '@mui/icons-material';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { useCurrentAccount, useDAppKit, useWalletConnection, useWallets } from '@mysten/dapp-kit-react';
 import { Transaction } from '@mysten/sui/transactions';
-import { fromBase64, fromHex, normalizeSuiAddress, toHex } from '@mysten/sui/utils';
+import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { CopyBlock } from 'react-code-blocks';
 
-const code = `import { SuiGrpcClient } from '@mysten/sui/grpc';
-import { Transaction } from '@mysten/sui/transactions';
-import { toHex } from '@mysten/sui/utils';
-
-const client = new SuiGrpcClient({
-  baseUrl: 'https://fullnode.mainnet.sui.io:443',
-  network: 'mainnet',
-});
+const code = `import { Transaction } from '@mysten/sui/transactions';
 
 const tx = new Transaction();
 // Must match the connected MSafe multisig address
 tx.setSender('0xYOUR_MSAFE_ADDRESS');
-// Your build logic here
+// Real commands — empty new Transaction() is rejected
+tx.transferObjects([tx.gas], '0xRECIPIENT');
 
-const txBytes = await tx.build({ client });
-// Copy the hex below into the input field
-const txHex = toHex(txBytes);`;
+// Preferred: Mysten V2 JSON (do not use deprecated serialize())
+const txJson = await tx.toJSON();
+// Paste txJson into the input field`;
 
 function isHex(str: string): boolean {
-  const hexRegex = /^[0-9a-fA-F]+$/;
-  return hexRegex.test(str);
+  return /^[0-9a-fA-F]+$/.test(str);
+}
+
+function parseTransaction(raw: string): Transaction {
+  const content = raw.trim();
+  if (!content) {
+    throw new Error('Transaction is empty');
+  }
+
+  if (content.startsWith('{')) {
+    return Transaction.from(content);
+  }
+
+  if (isHex(content)) {
+    return Transaction.from(fromHex(content));
+  }
+
+  return Transaction.from(content);
 }
 
 export default function App() {
@@ -61,7 +71,7 @@ export default function App() {
       <Stack spacing={3}>
         <PageHeader
           mainTitle="Plain Transaction"
-          subtitle="Propose your plain transaction with MSafe multisig protection"
+          subtitle="Propose a fully assembled Transaction. MSafe simulates, then owners vote and execute."
           action={
             connection.isConnected ? (
               <Button
@@ -88,8 +98,8 @@ export default function App() {
           }
         />
         <TextField
-          label="Transaction Block"
-          placeholder="Please input your transaction block BASE-64 or HEX encoding content."
+          label="Transaction"
+          placeholder="Paste Transaction toJSON() (preferred), HEX, or BASE-64."
           rows={7}
           multiline
           value={txContent}
@@ -106,32 +116,35 @@ export default function App() {
             loading={proposing}
             onClick={async () => {
               try {
-                const transaction = isHex(txContent)
-                  ? Transaction.from(fromHex(txContent))
-                  : Transaction.from(txContent);
-
                 if (!account) {
                   throw new Error('No account information');
                 }
 
-                const sender = transaction.getData().sender;
+                const transaction = parseTransaction(txContent);
+                const data = transaction.getData();
+
+                if (!data.commands.length) {
+                  throw new Error(
+                    'Empty transaction. Unregistered apps must pass a fully assembled Transaction (commands.length > 0). Do not send new Transaction().',
+                  );
+                }
+
+                const sender = data.sender;
                 if (!sender || normalizeSuiAddress(sender) !== normalizeSuiAddress(account.address)) {
                   throw new Error('Transaction sender is not same as the multisig address');
                 }
 
                 setProposing(true);
 
-                // content must be hex-encoded built tx bytes for msafe-plain-tx helper
-                const content = isHex(txContent) ? txContent : toHex(fromBase64(txContent));
-
+                // Propose only — no on-chain digest. Owners vote and execute in MSafe.
                 await dAppKit.signAndExecuteTransaction({
                   transaction,
                   account,
                   network: 'mainnet',
-                  // @ts-expect-error appContext is a MSafe wallet extension
-                  appContext: {
-                    content,
-                  },
+                });
+
+                enqueueSnackbar('Transaction proposed. Owners vote and execute in MSafe.', {
+                  variant: 'success',
                 });
               } catch (e) {
                 enqueueSnackbar(`Can't propose transaction: ${String(e)}`, { variant: 'error' });
