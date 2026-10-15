@@ -5,7 +5,7 @@ import { useCurrentAccount, useDAppKit, useWalletConnection, useWallets } from '
 import { Transaction } from '@mysten/sui/transactions';
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { useSnackbar } from 'notistack';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CopyBlock } from 'react-code-blocks';
 
 const code = `import { Transaction } from '@mysten/sui/transactions';
@@ -51,6 +51,8 @@ export default function App() {
 
   const [txContent, setTxContent] = useState('');
   const [proposing, setProposing] = useState(false);
+  const proposingRef = useRef(false);
+  const autoConnectAttempted = useRef(false);
 
   const connectWallet = useCallback(async () => {
     const msafeWallet = wallets.find((wallet) => wallet.name === 'MSafe Wallet');
@@ -62,11 +64,18 @@ export default function App() {
   }, [dAppKit, wallets]);
 
   useEffect(() => {
-    if (connection.isDisconnected && wallets.some((wallet) => wallet.name === 'MSafe Wallet')) {
-      connectWallet().catch((error: unknown) => {
-        console.warn('Automatic MSafe wallet connect failed', error);
-      });
+    if (!connection.isDisconnected) {
+      autoConnectAttempted.current = false;
+      return;
     }
+    // One attempt per disconnected session. A new wallets array must not stack connects.
+    if (autoConnectAttempted.current || !wallets.some((wallet) => wallet.name === 'MSafe Wallet')) {
+      return;
+    }
+    autoConnectAttempted.current = true;
+    connectWallet().catch((error: unknown) => {
+      console.warn('Automatic MSafe wallet connect failed', error);
+    });
   }, [connectWallet, connection.isDisconnected, wallets]);
   return (
     <Container sx={{ mt: 4 }}>
@@ -121,9 +130,10 @@ export default function App() {
             disabled={!connection.isConnected}
             loading={proposing}
             onClick={async () => {
-              if (proposing) {
+              if (proposingRef.current) {
                 return;
               }
+              proposingRef.current = true;
               setProposing(true);
               try {
                 if (!account) {
@@ -157,6 +167,7 @@ export default function App() {
               } catch (e) {
                 enqueueSnackbar(`Can't propose transaction: ${String(e)}`, { variant: 'error' });
               } finally {
+                proposingRef.current = false;
                 setProposing(false);
               }
             }}

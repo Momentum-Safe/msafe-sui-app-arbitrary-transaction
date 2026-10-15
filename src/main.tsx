@@ -12,7 +12,12 @@ import { dAppKit } from './dapp-kit';
 
 const queryClient = new QueryClient();
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<Root />);
+const root = document.getElementById('root');
+if (!root) {
+  throw new Error('Root element #root is missing');
+}
+
+ReactDOM.createRoot(root).render(<Root />);
 
 function Root() {
   return (
