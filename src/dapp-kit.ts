@@ -18,7 +18,7 @@ export const dAppKit = createDAppKit({
     {
       id: 'MSafe Wallet',
       initialize() {
-        // Required: app name + RPC URL + network. Same name as the store card.
+        // Wallet application name recorded on the proposal. The store card id is `plaintx`.
         const wallets = [
           new MSafeWallet('msafe-plain-tx', getJsonRpcFullnodeUrl('mainnet'), 'sui:mainnet'),
         ];

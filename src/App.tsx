@@ -5,7 +5,7 @@ import { useCurrentAccount, useDAppKit, useWalletConnection, useWallets } from '
 import { Transaction } from '@mysten/sui/transactions';
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CopyBlock } from 'react-code-blocks';
 
 const code = `import { Transaction } from '@mysten/sui/transactions';
@@ -51,21 +51,32 @@ export default function App() {
 
   const [txContent, setTxContent] = useState('');
   const [proposing, setProposing] = useState(false);
+  const proposingRef = useRef(false);
+  const autoConnectAttempted = useRef(false);
 
-  const connectWallet = async () => {
+  const connectWallet = useCallback(async () => {
     const msafeWallet = wallets.find((wallet) => wallet.name === 'MSafe Wallet');
     if (!msafeWallet) {
       return;
     }
 
     await dAppKit.connectWallet({ wallet: msafeWallet });
-  };
+  }, [dAppKit, wallets]);
 
   useEffect(() => {
-    if (connection.isDisconnected && wallets.some((wallet) => wallet.name === 'MSafe Wallet')) {
-      connectWallet().catch(() => undefined);
+    if (!connection.isDisconnected) {
+      autoConnectAttempted.current = false;
+      return;
     }
-  }, [wallets, connection.isDisconnected]);
+    // One attempt per disconnected session. A new wallets array must not stack connects.
+    if (autoConnectAttempted.current || !wallets.some((wallet) => wallet.name === 'MSafe Wallet')) {
+      return;
+    }
+    autoConnectAttempted.current = true;
+    connectWallet().catch((error: unknown) => {
+      console.warn('Automatic MSafe wallet connect failed', error);
+    });
+  }, [connectWallet, connection.isDisconnected, wallets]);
   return (
     <Container sx={{ mt: 4 }}>
       <Stack spacing={3}>
@@ -78,7 +89,9 @@ export default function App() {
                 variant="outlined"
                 color="secondary"
                 onClick={() => {
-                  dAppKit.disconnectWallet().catch(() => undefined);
+                  dAppKit.disconnectWallet().catch((error: unknown) => {
+                    enqueueSnackbar(`Can't disconnect wallet: ${String(error)}`, { variant: 'error' });
+                  });
                 }}
                 startIcon={<CheckCircle color="success" />}
               >
@@ -89,7 +102,9 @@ export default function App() {
                 variant="outlined"
                 color="secondary"
                 onClick={() => {
-                  connectWallet().catch(() => undefined);
+                  connectWallet().catch((error: unknown) => {
+                    enqueueSnackbar(`Can't connect wallet: ${String(error)}`, { variant: 'error' });
+                  });
                 }}
               >
                 Connect
@@ -115,6 +130,11 @@ export default function App() {
             disabled={!connection.isConnected}
             loading={proposing}
             onClick={async () => {
+              if (proposingRef.current) {
+                return;
+              }
+              proposingRef.current = true;
+              setProposing(true);
               try {
                 if (!account) {
                   throw new Error('No account information');
@@ -134,8 +154,6 @@ export default function App() {
                   throw new Error('Transaction sender is not same as the multisig address');
                 }
 
-                setProposing(true);
-
                 // Propose only — no on-chain digest. Owners vote and execute in MSafe.
                 await dAppKit.signAndExecuteTransaction({
                   transaction,
@@ -148,8 +166,8 @@ export default function App() {
                 });
               } catch (e) {
                 enqueueSnackbar(`Can't propose transaction: ${String(e)}`, { variant: 'error' });
-                throw e;
               } finally {
+                proposingRef.current = false;
                 setProposing(false);
               }
             }}

@@ -3,7 +3,7 @@
   "configVersion": 0,
   "workspaces": {
     "": {
-      "name": "msafe2.0",
+      "name": "msafe-sui-app-arbitrary-transaction",
       "dependencies": {
         "@msafe/msafe-ui": "^1.5.84",
         "@msafe/sui-wallet": "^1.0.4",

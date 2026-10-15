@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SnackbarProvider } from 'notistack';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
 
 import App from './App';
 import AppToast from './components/AppToast';
@@ -13,7 +12,12 @@ import { dAppKit } from './dapp-kit';
 
 const queryClient = new QueryClient();
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<Root />);
+const root = document.getElementById('root');
+if (!root) {
+  throw new Error('Root element #root is missing');
+}
+
+ReactDOM.createRoot(root).render(<Root />);
 
 function Root() {
   return (
@@ -21,22 +25,20 @@ function Root() {
       <MavenProvider>
         <QueryClientProvider client={queryClient}>
           <DAppKitProvider dAppKit={dAppKit}>
-            <BrowserRouter>
-              <SnackbarProvider
-                maxSnack={4}
-                autoHideDuration={3500}
-                Components={{
-                  default: AppToast,
-                  error: AppToast,
-                  success: AppToast,
-                  warning: AppToast,
-                  info: AppToast,
-                }}
-              >
-                <CssBaseline />
-                <App />
-              </SnackbarProvider>
-            </BrowserRouter>
+            <SnackbarProvider
+              maxSnack={4}
+              autoHideDuration={3500}
+              Components={{
+                default: AppToast,
+                error: AppToast,
+                success: AppToast,
+                warning: AppToast,
+                info: AppToast,
+              }}
+            >
+              <CssBaseline />
+              <App />
+            </SnackbarProvider>
           </DAppKitProvider>
         </QueryClientProvider>
       </MavenProvider>
