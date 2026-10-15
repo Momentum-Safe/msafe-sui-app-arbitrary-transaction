@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    visualizer() as PluginOption,
+    ...(process.env.ANALYZE === 'true' ? [visualizer() as PluginOption] : []),
     nodePolyfills({
       globals: {
         Buffer: true,
@@ -41,9 +41,11 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+          const packagePath = id.split('node_modules/')[1];
+          if (!packagePath) {
+            return undefined;
           }
+          return packagePath.split('/')[0];
         },
       },
       /**
